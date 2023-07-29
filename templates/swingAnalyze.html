@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>도란도란 골프 서비스</title>
+<style type="text/css">
+table {
+	width: 400px;
+	margin: 7px;
+	margin-bottom: 30px;
+	text-align: center;
+	border-collapse: collapse;
+	border-width: 3px;
+}
+#file_upload {
+	border-style:solid;
+	border-width:1px;
+	padding: 7px;
+}
+#vd_play {
+	width: 393px;
+}
+#btn {
+	width: 65px;
+	height: 65px;
+}
+</style>
+<script src="static/jquery-3.6.4.js"></script>
+<script type="text/javascript">
+$(function(){
+
+	$("#btn").on("click", function(){
+		
+		$("#btn").attr("src", "/static/swing.gif");
+		$("#p_txt").html("영상을 진단 중입니다...");
+		
+		var file = $("#file_upload")[0].files[0];
+		var filename = $("#file_upload")[0].files[0].name;
+		console.log(filename);
+		
+		var form_data = new FormData();
+		form_data.append("file", file);
+		
+		$.ajax({
+		    url: "/ajax_upload",
+		    processData: false,
+		    contentType: false,
+		    data: form_data,
+		    type: "post",
+	        xhrFields: {
+	            responseType: 'blob' // 응답 유형을 'blob'으로 설정합니다.
+	        },
+	        success: function(resp) {
+	            var video = document.getElementById("vd_play");
+	            video.src = URL.createObjectURL(resp);
+	            console.log("video.src : " + video.src);
+	            
+	            video.addEventListener('loadedmetadata', function() {
+	                video.play();
+	            });
+	            
+	            $("#btn").attr("src", "/static/golfball.gif");
+	            $("#p_txt").html("스윙 자세를 촬영한 동영상 파일을 업로드하세요");
+	        }    
+		});
+	});
+});
+</script>
+</head>
+<body>
+<br />
+<table border="1px">
+	<tr>
+		<td>
+			<h2>골프 스윙폼 진단</h2>
+		</td>
+	</tr>
+	<tr>
+		<td>
+			<p id="p_txt">스윙 자세를 촬영한 동영상 파일을 업로드하세요<p>
+			<p><input type="file" id="file_upload" name="file" accept="video/*" required /><p>
+			<p><input type="image" id="btn" src="/static/golfball.gif" value="Upload" /><p>
+		</td>
+	</tr>
+</table>
+<table border="1px">
+	<tr>
+		<td>
+			<h4>진단 영상</h4>
+		</td>
+	</tr>
+	<tr>
+		<td>
+			<video id="vd_play" controls preload="none" width="400" height="300" muted>
+			    <source id="vd_src" src="" type="video/mp4">
+			    Your browser does not support the video tag.
+			</video>
+		</td>
+	</tr>
+</table>
+
+    
+</body>
+</html>
+
+
+
+
+
+
+
+
